@@ -114,3 +114,29 @@ button {
     background-color: #0f0f0f69;
   }
 }
+.dragarea{width:100%;display: flex;
+font-weight:bold; padding:0px 0px 0px 10px;}
+.titlebar {
+  height: 30px;
+  background: #ff0162;
+  user-select: none;
+  display: inline-flex;
+  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+ 
+}
+.titlebar-button{
+  display: inline-flex;
+
+
+
+  padding-right: 10px;
+
+  
+}
+
+.new{display:inline-flex;padding-right: 5px;
+}
