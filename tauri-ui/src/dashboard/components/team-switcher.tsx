@@ -49,23 +49,14 @@ import {
 
 const groups = [
   {
-    label: "Personal Account",
+    label: "Servers",
     teams: [
       {
-        label: "Alicia Koch",
-        value: "personal",
-      },
-    ],
-  },
-  {
-    label: "Teams",
-    teams: [
-      {
-        label: "Acme Inc.",
+        label: "My Home Server",
         value: "acme-inc",
       },
       {
-        label: "Monsters Inc.",
+        label: "Wordpress server",
         value: "monsters",
       },
     ],
@@ -110,8 +101,8 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
         <PopoverContent className="w-[200px] p-0">
           <Command>
             <CommandList>
-              <CommandInput placeholder="Search team..." />
-              <CommandEmpty>No team found.</CommandEmpty>
+              <CommandInput placeholder="Search Servers..." />
+              <CommandEmpty>No Server found.</CommandEmpty>
               {groups.map((group) => (
                 <CommandGroup key={group.label} heading={group.label}>
                   {group.teams.map((team) => (
@@ -156,7 +147,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
                     }}
                   >
                     <PlusCircledIcon className="mr-2 h-5 w-5" />
-                    Create Team
+                    Add New Server
                   </CommandItem>
                 </DialogTrigger>
               </CommandGroup>
@@ -166,38 +157,20 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
       </Popover>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create team</DialogTitle>
+          <DialogTitle>Add Server</DialogTitle>
           <DialogDescription>
-            Add a new team to manage products and customers.
+            Add a new Server .
           </DialogDescription>
         </DialogHeader>
         <div>
           <div className="space-y-4 py-2 pb-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Team name</Label>
-              <Input id="name" placeholder="Acme Inc." />
+              <Label htmlFor="name">Server name</Label>
+              <Input id="name" placeholder="My Home Server" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="plan">Subscription plan</Label>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a plan" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="free">
-                    <span className="font-medium">Free</span> -{" "}
-                    <span className="text-muted-foreground">
-                      Trial for two weeks
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="pro">
-                    <span className="font-medium">Pro</span> -{" "}
-                    <span className="text-muted-foreground">
-                      $9/month per user
-                    </span>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="plan">Server ip</Label>
+              <Input id="name" placeholder="Https://IP:PORT" />
             </div>
           </div>
         </div>
@@ -205,7 +178,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
           <Button variant="outline" onClick={() => setShowNewTeamDialog(false)}>
             Cancel
           </Button>
-          <Button type="submit">Continue</Button>
+          <Button type="submit">Check</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
