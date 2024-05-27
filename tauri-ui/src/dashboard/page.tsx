@@ -20,7 +20,7 @@ import { RecentSales } from "@/dashboard/components/recent-sales"
 
 import TeamSwitcher from "@/dashboard/components/team-switcher"
 import { UserNav } from "@/dashboard/components/user-nav"
-
+import { Progress } from "@/components/ui/progress"
 
 export default function DashboardPage() {
   return (
@@ -70,10 +70,13 @@ export default function DashboardPage() {
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">$45,231.89</div>
-                    <p className="text-xs text-muted-foreground">
+                    <div className="text-2xl font-bold">32 %</div>
+                    {/* <p className="text-xs text-muted-foreground">
                       +20.1% from last month
-                    </p>
+                    </p> */}
+                  
+                    <Progress value={33} className="mt-4" />
+
                   </CardContent>
                 </Card>
                 <Card>
@@ -97,10 +100,13 @@ export default function DashboardPage() {
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+2350</div>
+                    <div className="text-2xl font-bold"> 45 %</div>
                     <p className="text-xs text-muted-foreground">
-                      +180.1% from last month
+                      3.4 of 8 GB used
                     </p>
+                  
+                    <Progress value={65} className="mt-4 " />
+
                   </CardContent>
                 </Card>
                 <Card>
@@ -126,10 +132,13 @@ export default function DashboardPage() {
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+12,234</div>
+                    <div className="text-2xl font-bold"> 95 %</div>
                     <p className="text-xs text-muted-foreground">
-                      +19% from last month
+                      9.5 of 10 GB used
                     </p>
+                  
+                    <Progress value={95} className="mt-4 " />
+
                   </CardContent>
                 </Card>
                 <Card>
