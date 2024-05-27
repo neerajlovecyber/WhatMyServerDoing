@@ -21,7 +21,19 @@ import { RecentSales } from "@/dashboard/components/recent-sales"
 import TeamSwitcher from "@/dashboard/components/team-switcher"
 import { UserNav } from "@/dashboard/components/user-nav"
 import { Progress } from "@/components/ui/progress"
+import { C } from "@tauri-apps/api/tauri-d78b6be0"
+import { randomBytes } from "crypto"
+import { totalmem } from "os"
 
+
+const cpu=20;
+const memory=45;
+const currentmemory=3.4;
+const totalmemory=8;
+const disk=95;
+const currentdisk= 7;
+const totalDisk=8;
+const activeTime=573;
 export default function DashboardPage() {
   return (
     <>
@@ -70,12 +82,12 @@ export default function DashboardPage() {
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">32 %</div>
+                    <div className="text-2xl font-bold">{cpu} %</div>
                     {/* <p className="text-xs text-muted-foreground">
                       +20.1% from last month
                     </p> */}
                   
-                    <Progress value={33} className="mt-4" />
+                    <Progress value={cpu} className="mt-4" />
 
                   </CardContent>
                 </Card>
@@ -100,12 +112,12 @@ export default function DashboardPage() {
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold"> 45 %</div>
+                    <div className="text-2xl font-bold"> {memory} %</div>
                     <p className="text-xs text-muted-foreground">
                       3.4 of 8 GB used
                     </p>
                   
-                    <Progress value={65} className="mt-4 " />
+                    <Progress value={memory} className="mt-4 " />
 
                   </CardContent>
                 </Card>
@@ -132,12 +144,12 @@ export default function DashboardPage() {
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold"> 95 %</div>
+                    <div className="text-2xl font-bold">{disk} %</div>
                     <p className="text-xs text-muted-foreground">
-                      9.5 of 10 GB used
+                      {currentdisk} of {totalDisk} GB used
                     </p>
                   
-                    <Progress value={95} className="mt-4 " />
+                    <Progress value={disk} className="mt-4 " />
 
                   </CardContent>
                 </Card>
@@ -152,10 +164,10 @@ export default function DashboardPage() {
 
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">+573</div>
-                    <p className="text-xs text-muted-foreground">
-                      +201 since last hour
-                    </p>
+                    <div className="text-2xl font-bold">+{activeTime} Hours</div>
+                    {/* <p className="text-xs text-muted-foreground">
+                      +{activeTime} since last hour
+                    </p> */}
                   </CardContent>
                 </Card>
               </div>
