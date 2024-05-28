@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import logo from "@/assets/logo.png"
-import { Globe, Mic, Sailboat } from "lucide-react"
+import { Globe, Mic, Router } from "lucide-react"
 import { WindowTitlebar } from "tauri-controls"
 
 import {
@@ -40,13 +40,14 @@ export function Menu() {
     >
       <Menubar className="rounded-none border-b border-none pl-2 lg:pl-3">
         <MenubarMenu>
-          <div className="inline-flex h-fit w-fit items-center text-cyan-500">
-            <Sailboat className="h-5 w-5" />
+          <div className="inline-flex h-fit w-fit items-center  bg-red-700 p-1.5 rounded-full">
+          
+            <Router className="h-5 w-5"/>
           </div>
         </MenubarMenu>
 
         <MenubarMenu>
-          <MenubarTrigger className="font-bold">App</MenubarTrigger>
+          <MenubarTrigger className="font-bold">WhatsMyServerDoing ?</MenubarTrigger>
           <Dialog modal={false}>
             <MenubarContent>
               <DialogTrigger asChild>
