@@ -10,6 +10,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/disk"
+	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
 )
 
@@ -21,6 +23,10 @@ var (
 	cachedRAM uint64
 	mu        sync.RWMutex
 	memusage  float64
+	diskUsage float64
+	totalDisk uint64
+	usedDisk  uint64
+	uptime    time.Duration
 )
 
 func updateMetrics() {
@@ -30,7 +36,25 @@ func updateMetrics() {
 		<-ticker.C
 		updateCPU()
 		updateRAM()
+		updateDisk()
+		updateUptime()
 	}
+}
+
+func updateDisk() {
+	diskStat, _ := disk.Usage("/")
+	mu.Lock()
+	diskUsage = diskStat.UsedPercent
+	totalDisk = diskStat.Total / 1024 / 1024 / 1024 // Convert bytes to GB
+	usedDisk = diskStat.Used / 1024 / 1024 / 1024   // Convert bytes to GB
+	mu.Unlock()
+}
+
+func updateUptime() {
+	uptimeSeconds, _ := host.Uptime()
+	mu.Lock()
+	uptime = time.Duration(uptimeSeconds) * time.Second
+	mu.Unlock()
 }
 
 func updateCPU() {
@@ -80,6 +104,27 @@ func main() {
 			"free":   freeRAM,
 			"cached": cachedRAM,
 			"usage":  memusage,
+		})
+	})
+
+	r.GET("/disk", func(c *gin.Context) {
+		mu.RLock()
+		defer mu.RUnlock()
+		c.JSON(http.StatusOK, gin.H{
+			"total": totalDisk,
+			"used":  usedDisk,
+			"usage": diskUsage,
+		})
+	})
+
+	r.GET("/uptime", func(c *gin.Context) {
+		mu.RLock()
+		defer mu.RUnlock()
+		days := int(uptime.Hours() / 24)
+		hours := int(uptime.Hours()) % 24
+		c.JSON(http.StatusOK, gin.H{
+			"days":  days,
+			"hours": hours,
 		})
 	})
 

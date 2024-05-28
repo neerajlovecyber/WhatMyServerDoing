@@ -2,9 +2,29 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
-const ActiveTimeCard = () => {
-  const activeTime = 95;  // Static data for now
-
+import { useEffect, useState } from 'react';
+  const ActiveTimeCard = () => {
+    const [Hours, setHours] = useState<number>(0);
+    const [Days, setDays] = useState<number>(0);
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch('http://localhost:8080/uptime');
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setHours(data.hours);
+          setDays(data.days);
+        } catch (error) {
+          console.error('Error fetching CPU data:', error);
+        }
+      };
+  
+      fetchData();
+      const intervalId = setInterval(fetchData, 2000);
+      return () => clearInterval(intervalId);
+    }, []);
 
   return (
     <Card>
@@ -16,7 +36,7 @@ const ActiveTimeCard = () => {
       </span>
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold">{activeTime} Hours</div>
+      <div className="text-2xl font-bold">{Days} Days {Hours} Hours</div>
     </CardContent>
   </Card>
   );
