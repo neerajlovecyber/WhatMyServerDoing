@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,18 +15,64 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import { useUrl } from '@/components/main/UrlContext';
 
 export function UserNav() {
   const { setTheme, theme } = useTheme();
   const isDark = theme === 'dark';
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isServerOnline, setIsServerOnline] = useState(false);
+  const serverUrl = useUrl().url;
 
   const toggleTheme = () => {
     setTheme(isDark ? 'light' : 'dark');
   };
 
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkServerConnection = async () => {
+      try {
+        const response = await fetch(serverUrl);
+        if (response.ok) {
+          setIsServerOnline(true);
+        } else {
+          setIsServerOnline(false);
+        }
+      } catch (error) {
+        setIsServerOnline(false);
+      }
+    };
+
+    if (isOnline) {
+      checkServerConnection();
+      const intervalId = setInterval(checkServerConnection, 5000);
+      return () => clearInterval(intervalId);
+    } else {
+      setIsServerOnline(false);
+    }
+  }, [isOnline]);
+
   return (
-    <div className="inline-flex">
+    <div className="inline-flex items-center">
       <button className="mr-3 h-8 w-8" onClick={toggleTheme}>
         {isDark ? (
           <svg
@@ -34,9 +80,9 @@ export function UserNav() {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="lucide lucide-sun"
           >
             <circle cx="12" cy="12" r="5" />
@@ -55,9 +101,9 @@ export function UserNav() {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="lucide lucide-moon-star"
           >
             <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9" />
@@ -66,6 +112,57 @@ export function UserNav() {
           </svg>
         )}
       </button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="mr-3 h-8 w-8">
+              {isOnline && isServerOnline ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="lightgreen"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-wifi"
+                >
+                  <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                  <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+                  <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                  <line x1="12" y1="20" x2="12" y2="20" />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="red"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-wifi-off"
+                >
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                  <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                  <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+                  <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                </svg>
+              )}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <div>
+              <p>
+                {isOnline ? "✅ Internet Connection" : "❌ Internet Connection"}
+              </p>
+              <p>
+                {isServerOnline ? "✅ Server Connection" : "❌ Server Connection"}
+              </p>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">

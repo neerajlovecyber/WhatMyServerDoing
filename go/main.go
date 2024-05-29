@@ -36,18 +36,26 @@ func updateMetrics() {
 		<-ticker.C
 		updateCPU()
 		updateRAM()
-		updateDisk()
 		updateUptime()
 	}
 }
 
-func updateDisk() {
-	diskStat, _ := disk.Usage("/")
-	mu.Lock()
-	diskUsage = diskStat.UsedPercent
-	totalDisk = diskStat.Total / 1024 / 1024 / 1024 // Convert bytes to GB
-	usedDisk = diskStat.Used / 1024 / 1024 / 1024   // Convert bytes to GB
-	mu.Unlock()
+func updateDiskMetrics() {
+	ticker := time.NewTicker(2 * time.Second) // Update every 2 seconds
+	defer ticker.Stop()
+	for {
+		<-ticker.C
+		updateDisk()
+	}
+}
+
+func updateTopProcessMetrics() {
+	ticker := time.NewTicker(2 * time.Second) // Update every 2 seconds
+	defer ticker.Stop()
+	for {
+		<-ticker.C
+		// Update top processes here
+	}
 }
 
 func updateUptime() {
@@ -77,15 +85,36 @@ func updateRAM() {
 	mu.Unlock()
 }
 
+func updateDisk() {
+	diskStat, _ := disk.Usage("/")
+	mu.Lock()
+	diskUsage = math.Round(diskStat.UsedPercent*10) / 10 // Round to one decimal place
+	totalDisk = diskStat.Total / 1024 / 1024 / 1024      // Convert bytes to GB
+	usedDisk = diskStat.Used / 1024 / 1024 / 1024        // Convert bytes to GB
+	mu.Unlock()
+}
+
 func main() {
-	go updateMetrics() // Start updating metrics in the background
+	go updateMetrics()           // Start updating CPU and RAM metrics in the background
+	go updateDiskMetrics()       // Start updating disk metrics in the background
+	go updateTopProcessMetrics() // Start updating top process metrics in the background
 
 	r := gin.Default()
 
-	// Configure CORS middleware
+	// Configure CORS middleware to allow all origins
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:1420"} // Allow requests from Tauri app
+	config.AllowAllOrigins = true
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"} // Allow necessary methods
+	config.AllowHeaders = []string{"Origin", "Content-Type", "Accept"}        // Allow necessary headers
 	r.Use(cors.New(config))
+
+	r.GET("/", func(c *gin.Context) {
+		mu.RLock()
+		defer mu.RUnlock()
+		c.JSON(http.StatusOK, gin.H{
+			"Server": "Server is running",
+		})
+	})
 
 	r.GET("/cpu", func(c *gin.Context) {
 		mu.RLock()
@@ -97,7 +126,6 @@ func main() {
 	r.GET("/ram", func(c *gin.Context) {
 		mu.RLock()
 		defer mu.RUnlock()
-
 		c.JSON(http.StatusOK, gin.H{
 			"total":  totalRAM,
 			"used":   usedRAM,
@@ -128,6 +156,15 @@ func main() {
 		})
 	})
 
+	r.GET("/system", func(c *gin.Context) {
+		sysInfo, err := getSystemInfo()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve system information"})
+			return
+		}
+		c.JSON(http.StatusOK, sysInfo)
+	})
+
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
@@ -137,4 +174,19 @@ func main() {
 func round(num float64, decimalPlaces int) float64 {
 	precision := math.Pow(10, float64(decimalPlaces))
 	return math.Round(num*precision) / precision
+}
+
+// getSystemInfo retrieves system information.
+func getSystemInfo() (map[string]interface{}, error) {
+	info, err := host.Info()
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"hostname":        info.Hostname,
+		"os":              info.OS,
+		"platform":        info.Platform,
+		"platformVersion": info.PlatformVersion,
+		"kernelArch":      info.KernelArch,
+	}, nil
 }

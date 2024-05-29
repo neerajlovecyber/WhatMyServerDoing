@@ -2,16 +2,17 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { set } from 'date-fns';
-
+import { useUrl } from '@/components/main/UrlContext';
+import { MemoryStick } from 'lucide-react';
 const RamUsageCard = () => {
   const [ramUsage, setRamUsage] = useState<number>(0);
 const [currentram, setcurrentram] = useState<number>(0);
 const [totalram, settotalram] = useState<number>(0);
+const { url } = useUrl();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8080/ram');
+        const response = await fetch(url + 'ram');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -33,19 +34,7 @@ const [totalram, settotalram] = useState<number>(0);
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">System Memory Usage</CardTitle>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          className="h-4 w-4 text-muted-foreground"
-        >
-          <rect width="20" height="14" x="2" y="5" rx="2" />
-          <path d="M2 10h20" />
-        </svg>
+        <MemoryStick/>
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{ramUsage} %</div>

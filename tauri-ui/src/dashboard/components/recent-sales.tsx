@@ -53,7 +53,7 @@ export function RecentSales() {
     <div className="space-y-2 ">
           <Table aria-label="Example table with dynamic content "  className="border rounded">
       <TableHeader columns={columns} >
-        {(column) => <TableColumn className="bg-accent rounded" key={column.key}>{column.label}</TableColumn>}
+        {(column) => <TableColumn className="bg-accent " key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
       <TableBody items={rows}>
         {(item) => (
