@@ -3,11 +3,13 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
+import { getDatabase,ref } from "firebase/database";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyATtp5kphlHgOcRgm8v8LoDQzdFjb4FjBE",
   authDomain: "whatsmyserverdoing.firebaseapp.com",
+  databaseURL:"https://whatsmyserverdoing-default-rtdb.asia-southeast1.firebasedatabase.app/",
   projectId: "whatsmyserverdoing",
   storageBucket: "whatsmyserverdoing.appspot.com",
   messagingSenderId: "592005176509",
@@ -19,7 +21,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
-
+const database = getDatabase(app);
 const signInWithGoogle = async (setUser) => {
   const provider = new GoogleAuthProvider();
   try {
@@ -28,7 +30,8 @@ const signInWithGoogle = async (setUser) => {
     setUser({
       displayName: user.displayName,
       email: user.email,
-      photoURL: user.photoURL
+      photoURL: user.photoURL,
+      uid: user.uid
     }); // Set user data in the application state
     return user;
   } catch (error) {
@@ -44,4 +47,4 @@ const signOutUser = async () => {
   }
 };
 
-export { app, auth, signInWithGoogle, signOutUser, analytics };
+export { app, auth, signInWithGoogle, signOutUser, analytics ,database};

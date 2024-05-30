@@ -13,10 +13,10 @@ const UserProvider = (props) => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (isMounted.current) {
         if (user) {
-          const { displayName, email ,photoURL } = user;
+          const { displayName, email ,photoURL,uid } = user;
           setUser({
             displayName,
-            email,photoURL
+            email,photoURL,uid
           });
         } else {
           setUser(null);
