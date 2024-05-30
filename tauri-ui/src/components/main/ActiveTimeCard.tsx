@@ -26,7 +26,7 @@ import { Clock } from 'lucide-react';
       fetchData();
       const intervalId = setInterval(fetchData, 2000);
       return () => clearInterval(intervalId);
-    }, []);
+    }, [url]);
 
   return (
     <Card>

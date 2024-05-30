@@ -4,6 +4,7 @@ import { Progress } from '@/components/ui/progress';
 import { useEffect, useState } from 'react';
 import { useUrl } from '@/components/main/UrlContext';
 import { Server } from 'lucide-react';
+import { set } from 'date-fns';
 const DiskUsageCard = () => {
   const [Total, settotal] = useState<number>(0);
   const [Usage, setusage] = useState<number>(0);
@@ -21,14 +22,17 @@ const DiskUsageCard = () => {
           setusage(data.usage);
           setused(data.used);
         } catch (error) {
-          console.error('Error fetching RAM data:', error);
+          console.error('Error fetching disk data:', error);
+          settotal(0);
+          setusage(0);
+          setused(0);
         }
       };
   
       fetchData();
       const intervalId = setInterval(fetchData, 2000);
       return () => clearInterval(intervalId);
-    }, []);
+    }, [url]);
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

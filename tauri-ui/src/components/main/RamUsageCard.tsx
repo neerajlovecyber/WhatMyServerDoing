@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useUrl } from '@/components/main/UrlContext';
 import { MemoryStick } from 'lucide-react';
+import { set } from 'date-fns';
+import { s } from '@tauri-apps/api/path-f8d71c21';
 const RamUsageCard = () => {
   const [ramUsage, setRamUsage] = useState<number>(0);
 const [currentram, setcurrentram] = useState<number>(0);
@@ -22,13 +24,16 @@ const { url } = useUrl();
         settotalram(data.total);
       } catch (error) {
         console.error('Error fetching RAM data:', error);
+        setRamUsage(0);
+        setcurrentram(0);
+        settotalram(0);
       }
     };
 
     fetchData();
     const intervalId = setInterval(fetchData, 2000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [url]);
 
   return (
     <Card>

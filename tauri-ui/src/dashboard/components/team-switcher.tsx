@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { database } from "../../services/firebase";
 import { ref, push, onValue } from "firebase/database"; 
 import { UserContext } from '@/providers/UserProvider';
-
+import { useUrl } from '@/components/main/UrlContext';
 const initialGroups = [
   {
     label: "Servers",
@@ -34,36 +34,48 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
   const [newserverUrl, setnewServerUrl] = useState("");
   const [groups, setGroups] = useState(initialGroups);
   const { user } = useContext(UserContext);
+  const { url, setUrl } = useUrl();
+useEffect(() => {
+  console.log("Selected team:", selectedTeam);
+  // Check if a team is selected
+  if (selectedTeam) {
+    // Set the URL context with the URL of the selected team
+    console.log("Setting URL in context:", selectedTeam.url);
+    setUrl(selectedTeam.url);
+  }
+}, [selectedTeam, setUrl]);
 
-  useEffect(() => {
-    if (!user) return;
+useEffect(() => {
+  if (!user) return;
 
-    const urlll = `servers/${user.uid}`;
-    const dbRef = ref(database, urlll);
+  const urlll = `servers/${user.uid}`;
+  const dbRef = ref(database, urlll);
 
-    // Fetch the data from the database when the component mounts
-    const unsubscribe = onValue(dbRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        // Convert the data object into an array of teams
-        const teams = Object.entries(data).map(([key, value]) => ({
-          label: value.name,
-          value: key
-        }));
-        // Update the groups with the fetched teams
-        setGroups([{ label: "Servers", teams }]);
-        // Select the first team by default if none selected
-        if (!selectedTeam) {
-          setSelectedTeam(teams[0]);
-        }
+  // Fetch the data from the database when the component mounts
+  const unsubscribe = onValue(dbRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      // Convert the data object into an array of teams with label, value, and url properties
+      const teams = Object.entries(data).map(([key, value]) => ({
+        label: value.name,
+        value: key,
+        url: value.url // Include the url property here
+      }));
+      // Update the groups with the fetched teams
+      setGroups([{ label: "Servers", teams }]);
+      // Select the first team by default if none selected
+      if (!selectedTeam) {
+        setSelectedTeam(teams[0]);
       }
-    });
+    }
+  });
 
-    // Cleanup function to unsubscribe from database changes
-    return () => {
-      unsubscribe();
-    };
-  }, [user]);
+  // Cleanup function to unsubscribe from database changes
+  return () => {
+    unsubscribe();
+  };
+}, [user]);
+
 
   const addServerToDatabase = async () => {
     try {
