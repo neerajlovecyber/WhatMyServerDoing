@@ -1,5 +1,9 @@
-import { useState, useEffect } from 'react';
+// UserNav.jsx
+
+import { useState, useEffect, useContext } from 'react';
 import { useTheme } from 'next-themes';
+import { useNavigate } from 'react-router-dom';
+import { signOutUser } from '../../services/firebase';
 import {
   Avatar,
   AvatarFallback,
@@ -23,6 +27,7 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import { useUrl } from '@/components/main/UrlContext';
+import { UserContext } from '@/providers/UserProvider';
 
 export function UserNav() {
   const { setTheme, theme } = useTheme();
@@ -30,7 +35,9 @@ export function UserNav() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isServerOnline, setIsServerOnline] = useState(false);
   const serverUrl = useUrl().url;
-
+  const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
+  
   const toggleTheme = () => {
     setTheme(isDark ? 'light' : 'dark');
   };
@@ -71,6 +78,16 @@ export function UserNav() {
     }
   }, [isOnline]);
 
+  const handleSignOut = async () => {
+    try {
+      await signOutUser();
+      setUser(null);
+      navigate('/'); // Redirect to login page after logout
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <div className="inline-flex items-center">
       <button className="mr-3 h-8 w-8" onClick={toggleTheme}>
@@ -106,7 +123,7 @@ export function UserNav() {
             strokeLinejoin="round"
             className="lucide lucide-moon-star"
           >
-            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9" />
+            <path d="M12 3a6 6 0 0 0 9 9 9 0 1 1-9-9" />
             <path d="M20 3v4" />
             <path d="M22 5h-4" />
           </svg>
@@ -167,7 +184,7 @@ export function UserNav() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
-              <AvatarImage src="/avatars/01.png" alt="@shadcn" />
+              <AvatarImage src={user?.photoURL} alt="User Avatar" />
               <AvatarFallback>SC</AvatarFallback>
             </Avatar>
           </Button>
@@ -175,9 +192,9 @@ export function UserNav() {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">shadcn</p>
+              <p className="text-sm font-medium leading-none">{user?.displayName}</p>
               <p className="text-xs leading-none text-muted-foreground">
-                m@example.com
+                {user?.email}
               </p>
             </div>
           </DropdownMenuLabel>
@@ -188,19 +205,13 @@ export function UserNav() {
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              Billing
-              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
               Settings
               <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem>New Team</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            Log out
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          <DropdownMenuItem onClick={handleSignOut}>
+            Logout
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

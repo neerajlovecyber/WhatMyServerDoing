@@ -1,3 +1,5 @@
+// providers/UserProvider.js
+
 import React, { useState, useEffect, createContext, useRef } from "react";
 import { auth } from "../services/firebase";
 
@@ -11,10 +13,10 @@ const UserProvider = (props) => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (isMounted.current) {
         if (user) {
-          const { displayName, email } = user;
+          const { displayName, email ,photoURL } = user;
           setUser({
             displayName,
-            email,
+            email,photoURL
           });
         } else {
           setUser(null);

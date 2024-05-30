@@ -33,7 +33,7 @@ function App() {
                     <Route path="/dashboard" element={<DashboardPage/>} />
                   )
                   {/* Redirect to dashboard if authenticated and accessing root */}
-                  {/* {user && <Navigate to="/dashboard" replace />} */}
+                  {user && <Navigate to="/dashboard" replace />}
                 </Routes>
               </div>
             </div>

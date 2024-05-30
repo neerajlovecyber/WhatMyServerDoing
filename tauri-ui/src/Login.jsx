@@ -1,3 +1,5 @@
+// Login.js
+
 import { useContext } from "react";
 import { signInWithGoogle } from "./services/firebase";
 import { useNavigate } from "react-router-dom";
@@ -7,12 +9,10 @@ export default function Login() {
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
-  const handleSignInWithGoogle = async () => {
+  const handleSignInWithGoogle = async () => { // Remove the parameter
     try {
-      const user = await signInWithGoogle();
-      const { displayName, email } = user;
-      setUser({ displayName, email });
-      console.log("Signed in with Google:", user);
+      const user = await signInWithGoogle(setUser); // Pass setUser directly
+      console.log("Login", user);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error signing in with Google:", error);
