@@ -3,7 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": false,
+    "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
@@ -19,6 +19,7 @@
     "paths": {
       "@/*": ["src/*"]
     }
+    
   },
   "include": ["src"],
   "exclude": ["node_modules", "src-tauri", "dist", ".next"],
