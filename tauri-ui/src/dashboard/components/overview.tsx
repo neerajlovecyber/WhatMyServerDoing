@@ -1,17 +1,16 @@
 // components/RamUsageCard.tsx
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { useUrl } from '@/components/main/UrlContext';
-import { set } from 'date-fns';
 import { DesktopIcon } from '@radix-ui/react-icons';
-import { uptime } from 'process';
+
+
 const RamUsageCard = () => {
-  const [hostname, sethostname] = useState<number>(0);
-const [os, setos] = useState<number>(0);
-const [platform, setplatform] = useState<number>(0);
-const [platformversion, setplatformversion] = useState<number>(0);
-const [kenerlarch, setkernelarch] = useState<number>(0);
+  const [hostname, sethostname] = useState<string>("0");
+const [os, setos] = useState<string>("0");
+const [platform, setplatform] = useState<string>("0");
+const [platformversion, setplatformversion] = useState<string>("0");
+const [kenerlarch, setkernelarch] = useState<string>("0");
 const [days, setuptimedays] = useState<number>(0);
 const [uptimehours, setuptimehours] = useState<number>(0);
 const { url } = useUrl();
@@ -19,28 +18,36 @@ const { url } = useUrl();
     const fetchData = async () => {
       try {
         const response = await fetch(url + 'system');
-        const uptime = await fetch(url + 'uptime');
+        
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        const uptimeData = await uptime.json();
+        
         sethostname(data.hostname);
         setos(data.os);
         setplatform(data.platform);
         setplatformversion(data.platformVersion);
         setkernelarch(data.kernelArch);
-        setuptimedays(uptimeData.days);
-        setuptimehours(uptimeData.hours);
+        setuptimedays(Math.round(data.uptime/60/60/24));
+        setuptimehours(Math.round(data.uptime/60/60*10)/10);
+        
       } catch (error) {
         console.error('Error fetching RAM data:', error);
+        sethostname("-");
+        setos("-");
+        setplatform("-");
+        setplatformversion("-");
+        setkernelarch("-");
+        setuptimedays(0);
+        setuptimehours(0)
       }
     };
 
     fetchData();
     const intervalId = setInterval(fetchData, 2000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [url]);
 
   return (
     <Card className="col-span-3">

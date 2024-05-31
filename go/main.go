@@ -188,5 +188,6 @@ func getSystemInfo() (map[string]interface{}, error) {
 		"platform":        info.Platform,
 		"platformVersion": info.PlatformVersion,
 		"kernelArch":      info.KernelArch,
+		"uptime":          info.Uptime,
 	}, nil
 }
