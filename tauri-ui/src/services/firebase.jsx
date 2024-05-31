@@ -1,7 +1,7 @@
 // services/firebase.js
 
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut,browserLocalPersistence,setPersistence} from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase,ref } from "firebase/database";
 
@@ -18,10 +18,15 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-const auth = getAuth(app);
+const auth = getAuth();
 const database = getDatabase(app);
+
+// Set authentication state persistence
+setPersistence(auth, browserLocalPersistence);
+
 const signInWithGoogle = async (setUser) => {
   const provider = new GoogleAuthProvider();
   try {
@@ -47,4 +52,4 @@ const signOutUser = async () => {
   }
 };
 
-export { app, auth, signInWithGoogle, signOutUser, analytics ,database};
+export { app, auth, signInWithGoogle, signOutUser, analytics, database };
