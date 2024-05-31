@@ -13,6 +13,7 @@ import { database } from "../../services/firebase";
 import { ref, push, onValue } from "firebase/database"; 
 import { UserContext } from '@/providers/UserProvider';
 import { useUrl } from '@/components/main/UrlContext';
+
 const initialGroups = [
   {
     label: "Servers",
@@ -34,6 +35,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
   const [newserverUrl, setnewServerUrl] = useState("");
   const [groups, setGroups] = useState(initialGroups);
   const { user } = useContext(UserContext);
+  
   const { url, setUrl } = useUrl();
 useEffect(() => {
   console.log("Selected team:", selectedTeam);
@@ -53,10 +55,10 @@ useEffect(() => {
 
   // Fetch the data from the database when the component mounts
   const unsubscribe = onValue(dbRef, (snapshot) => {
-    const data = snapshot.val();
+    const data: { [key: string]: { name: string; url: string } } = snapshot.val();
     if (data) {
       // Convert the data object into an array of teams with label, value, and url properties
-      const teams = Object.entries(data).map(([key, value]) => ({
+      const teams = Object.entries(data).map(([key, value]: [string, { name: string; url: string }]) => ({
         label: value.name,
         value: key,
         url: value.url // Include the url property here

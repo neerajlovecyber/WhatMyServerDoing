@@ -29,6 +29,8 @@ setPersistence(auth, browserLocalPersistence);
 
 const signInWithGoogle = async (setUser) => {
   const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+  
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;

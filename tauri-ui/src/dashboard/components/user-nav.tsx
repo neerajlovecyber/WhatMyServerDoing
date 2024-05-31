@@ -81,7 +81,7 @@ export function UserNav() {
   const handleSignOut = async () => {
     try {
       await signOutUser();
-      setUser(null);
+      setUser() ;
       navigate('/'); // Redirect to login page after logout
     } catch (error) {
       console.error("Error signing out:", error);
