@@ -1,7 +1,7 @@
 # Node.js dependencies
 node_modules
 **/node_modules
-
+**/dist
 # Tauri build outputs
 **/src-tauri/target
 tauri-ui/src-tauri/target
