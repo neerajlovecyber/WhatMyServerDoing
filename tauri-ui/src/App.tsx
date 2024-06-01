@@ -8,7 +8,7 @@ import UserProvider, { UserContext } from "./providers/UserProvider";
 import { cn } from "./lib/utils";
 import { UrlProvider } from "@/components/main/UrlContext";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-
+import LogsPage from "./logs/LogsPage";
 function App() {
   const { user } = useContext(UserContext);
 
@@ -26,14 +26,15 @@ function App() {
                 )}
               >
                 <Routes>
-                  {/* Redirect to login if not authenticated */}
+                
                   {!user && <Route path="/" element={<Login />} />}
-                  {/* Render DashboardPage only if authenticated and on /dashboard route */}
+                  
                    (
                     <Route path="/dashboard" element={<DashboardPage/>} />
                   )
-                  {/* Redirect to dashboard if authenticated and accessing root */}
+                  
                   {user && <Navigate to="/dashboard" replace />}
+<Route path="/logs" element={<LogsPage />} />
                 </Routes>
               </div>
             </div>

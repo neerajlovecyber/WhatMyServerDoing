@@ -1,9 +1,9 @@
 // Logout.js
 
 import { useContext } from "react";
-import { signOutUser } from "../services/firebase";
+import { signOutUser } from "services/firebase";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../providers/UserProvider";
+import { UserContext } from "providers/UserProvier";
 
 export default function Logout() {
   const { setUser } = useContext(UserContext);
