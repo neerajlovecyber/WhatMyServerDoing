@@ -77,7 +77,7 @@ func updateCPU() {
 func updateRAM() {
 	virtualMemory, _ := mem.VirtualMemory()
 	mu.Lock()
-	totalRAM = virtualMemory.Total / 1024 / 1024 / 1024   // Convert bytes to GB
+	totalRAM = virtualMemory.Total / 1024 / 1024 / 1024   // Convert bytes to GB.
 	usedRAM = virtualMemory.Used / 1024 / 1024 / 1024     // Convert bytes to GB
 	freeRAM = virtualMemory.Free / 1024 / 1024 / 1024     // Convert bytes to GB
 	cachedRAM = virtualMemory.Cached / 1024 / 1024 / 1024 // Convert bytes to GB
