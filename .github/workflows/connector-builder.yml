@@ -12,30 +12,32 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        go-version: [2.20]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Go
+      - name: Set up Go
         uses: actions/setup-go@v5
+
+
+
 
       - name: Build
         run: |
-          ls
           cd go
           mkdir -p build
           go build -mod=readonly -o build/whatsmyderverdoing-connector main.go
-
 
       - name: Archive build artifacts
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: whatsmyderverdoing-connector
+          name: whatsmyderverdoing-connector-${{ matrix.os }}
           path: build/whatsmyderverdoing-connector
 
   release:
@@ -68,17 +70,52 @@ jobs:
           git tag -a "v$NEW_VERSION" -m "Release $NEW_VERSION"
           git push origin main --tags
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: whatsmyderverdoing-connector-${{ matrix.os }}
+          path: build
 
-      - name: Build Docker image
-        run: |
-          docker build -t my-image .
-          docker tag my-image neerajlovecyber/my-image:${{ env.NEW_VERSION }}
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.NEW_VERSION }}
+          release_name: Release v${{ env.NEW_VERSION }}
+          draft: false
+          prerelease: false
 
-      - name: Log in to Docker Hub
-        run: docker login -u neerajlovecyber -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      - name: Upload Release Asset (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/whatsmyderverdoing-connector
+          asset_name: whatsmyderverdoing-connector-linux
+          asset_content_type: application/octet-stream
 
-      - name: Push Docker image to Docker Hub
-        run: |
-          docker push neerajlovecyber/my-image:${{ env.NEW_VERSION }}
+      - name: Upload Release Asset (macOS)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/whatsmyderverdoing-connector
+          asset_name: whatsmyderverdoing-connector-macos
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/whatsmyderverdoing-connector.exe
+          asset_name: whatsmyderverdoing-connector-windows.exe
+          asset_content_type: application/octet-stream
