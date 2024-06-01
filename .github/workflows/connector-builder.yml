@@ -23,10 +23,6 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
 
-
-      - name: Install Dependencies
-        run: go mod download
-
       - name: Build
         run: |
           mkdir -p build
