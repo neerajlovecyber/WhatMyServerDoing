@@ -3,8 +3,8 @@ name: Go
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - 'go/**'
+    # paths:
+    #   - 'go/**'
   pull_request:
     branches: [ "main" ]
     paths:
@@ -15,7 +15,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest,  windows-latest]
+        os: [ubuntu-latest, windows-latest]
+
+    outputs:
+      os: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -23,7 +26,6 @@ jobs:
 
       - name: Set up Go
         uses: actions/setup-go@v5
-
 
       - name: Build
         run: |
@@ -42,6 +44,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,7 +57,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: whatsmyderverdoing-connector-${{ matrix.os }}
+          name: whatsmyderverdoing-connector-${{ needs.build.outputs.os }}
           path: build
 
       - name: Create GitHub Release
@@ -75,8 +81,6 @@ jobs:
           asset_path: build/whatsmyderverdoing-connector
           asset_name: whatsmyderverdoing-connector-linux
           asset_content_type: application/octet-stream
-
-
 
       - name: Upload Release Asset (Windows)
         if: matrix.os == 'windows-latest'
