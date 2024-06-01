@@ -41,7 +41,7 @@ func updateMetrics() {
 }
 
 func updateDiskMetrics() {
-	ticker := time.NewTicker(2 * time.Second) // Update every 2 seconds.
+	ticker := time.NewTicker(2 * time.Second) // Update every 2 seconds
 	defer ticker.Stop()
 	for {
 		<-ticker.C
@@ -50,7 +50,7 @@ func updateDiskMetrics() {
 }
 
 func updateTopProcessMetrics() {
-	ticker := time.NewTicker(2 * time.Second) // Update every 2 secon ds  
+	ticker := time.NewTicker(2 * time.Second) // Update every 2 secon 
 	defer ticker.Stop()
 	for {
 		<-ticker.C
