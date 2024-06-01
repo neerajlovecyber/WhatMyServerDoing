@@ -13,6 +13,7 @@ import { database } from "../../services/firebase";
 import { ref, push, onValue } from "firebase/database"; 
 import { UserContext } from '@/providers/UserProvider';
 import { useUrl } from '@/components/main/UrlContext';
+import { DialogClose } from "@radix-ui/react-dialog"
 
 const initialGroups = [
   {
@@ -37,6 +38,48 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
   const { user } = useContext(UserContext);
   
   const { url, setUrl } = useUrl();
+  const [recordAdded, setRecordAdded] = useState(false)
+
+  useEffect(() => {
+    if (!user) return;
+
+    const urlll = `servers/${user.uid}`;
+    const dbRef = ref(database, urlll);
+
+    // Fetch the data from the database when the component mounts
+    const unsubscribe = onValue(dbRef, (snapshot) => {
+      const data: { [key: string]: { name: string; url: string } } = snapshot.val();
+      if (data) {
+        const teams = Object.entries(data).map(([key, value]: [string, { name: string; url: string }]) => ({
+          label: value.name,
+          value: key,
+          url: value.url
+        }));
+        setGroups([{ label: "Servers", teams }]);
+        if (!selectedTeam) {
+          setSelectedTeam(teams[0]);
+        }
+        // If there are teams, set recordAdded state to true
+        if (teams.length > 0) {
+          setRecordAdded(true);
+        }
+      } else {
+        // If no data is fetched, show the "Add Server" popup
+        setShowNewTeamDialog(true);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [user, selectedTeam]);
+  const handleCancelClick = () => {
+    // Close the dialog only if a record has been added
+    if (recordAdded) {
+      setShowNewTeamDialog(false);
+    }
+  };
+
 useEffect(() => {
   console.log("Selected team:", selectedTeam);
   // Check if a team is selected
@@ -143,7 +186,9 @@ useEffect(() => {
   
   return (
     <div>
-      <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
+
+<Dialog open={showNewTeamDialog } onOpenChange={setShowNewTeamDialog}>
+
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -204,6 +249,7 @@ useEffect(() => {
                       onSelect={() => {
                         setOpen(false)
                         setShowNewTeamDialog(true)
+                        console.log("Add new server clicked")
                       }}
                     >
                       <PlusCircledIcon className="mr-2 h-5 w-5" />
@@ -223,6 +269,7 @@ useEffect(() => {
             </DialogDescription>
           </DialogHeader>
           <div>
+            <DialogClose className="absolute top-12 right-2" />
             <div className="space-y-4 py-2 pb-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Server name</Label>
@@ -237,7 +284,7 @@ useEffect(() => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowNewTeamDialog(false)}>
+            <Button variant="outline" onClick={() => handleCancelClick}>
               Cancel
             </Button>
             <Button type="submit" onClick={handleSubmit}>Add</Button>
