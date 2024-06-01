@@ -69,7 +69,7 @@ func updateCPU() {
 	percent, _ := cpu.Percent(0, false)
 	mu.Lock()
 	if len(percent) > 0 {
-		cpuUsage = percent[0] // Access the first element of the slice
+		cpuUsage = percent[0] // Access the first element of the slice.
 	}
 	mu.Unlock()
 }
