@@ -26,10 +26,13 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
 
+      - name: Install Dependencies
+        run: go mod download
+
       - name: Build
         run: |
           mkdir -p build
-          go build -o build/whatsmyderverdoing-connector go/main.go
+          go build -mod=readonly -o build/whatsmyderverdoing-connector go/main.go
 
       - name: Archive build artifacts
         if: always()
