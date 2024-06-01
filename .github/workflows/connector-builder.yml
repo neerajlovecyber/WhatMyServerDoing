@@ -25,8 +25,9 @@ jobs:
 
       - name: Build
         run: |
+          cd /go
           mkdir -p build
-          GO111MODULE=on go build -mod=readonly -o build/whatsmyderverdoing-connector go/main.go
+          go build -mod=readonly -o build/whatsmyderverdoing-connector main.go
 
 
       - name: Archive build artifacts
