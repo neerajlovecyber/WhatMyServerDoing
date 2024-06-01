@@ -30,7 +30,7 @@ var (
 )
 
 func updateMetrics() {
-	ticker := time.NewTicker(1 * time.Second) // Update every 1 second.
+	ticker := time.NewTicker(1 * time.Second) // Update every 1 second
 	defer ticker.Stop()
 	for {
 		<-ticker.C
