@@ -113,7 +113,7 @@ func updateRAM() {
 	usedRAM = virtualMemory.Used / 1024 / 1024 / 1024     // Convert bytes to GB
 	freeRAM = virtualMemory.Free / 1024 / 1024 / 1024     // Convert bytes to GB
 	cachedRAM = virtualMemory.Cached / 1024 / 1024 / 1024 // Convert bytes to GB
-	memusage = virtualMemory.UsedPercent
+	memusage = math.Round(virtualMemory.UsedPercent*10) / 10
 	mu.Unlock()
 }
 
