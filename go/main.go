@@ -27,6 +27,15 @@ var (
 	totalDisk uint64
 	usedDisk  uint64
 	uptime    time.Duration
+
+	// Slices to store data points within a minute
+	cpuDataPoints []float64
+	ramDataPoints []float64
+
+	// Historical data for the last 60 minutes
+	historicalCPUUsage []float64
+	historicalRAMUsage []float64
+	historicalMutex    sync.RWMutex
 )
 
 func updateMetrics() {
@@ -37,6 +46,29 @@ func updateMetrics() {
 		updateCPU()
 		updateRAM()
 		updateUptime()
+
+		mu.RLock()
+		cpuDataPoints = append(cpuDataPoints, cpuUsage)
+		ramDataPoints = append(ramDataPoints, memusage)
+		mu.RUnlock()
+
+		// Compute 1-minute average and store in historical data
+		if len(cpuDataPoints) >= 60 {
+			averageCPU := calculateAverage(cpuDataPoints)
+			averageRAM := calculateAverage(ramDataPoints)
+
+			historicalMutex.Lock()
+			historicalCPUUsage = append(historicalCPUUsage, averageCPU)
+			historicalRAMUsage = append(historicalRAMUsage, averageRAM)
+			if len(historicalCPUUsage) > 60 {
+				historicalCPUUsage = historicalCPUUsage[1:]
+				historicalRAMUsage = historicalRAMUsage[1:]
+			}
+			historicalMutex.Unlock()
+
+			cpuDataPoints = []float64{}
+			ramDataPoints = []float64{}
+		}
 	}
 }
 
@@ -50,7 +82,7 @@ func updateDiskMetrics() {
 }
 
 func updateTopProcessMetrics() {
-	ticker := time.NewTicker(2 * time.Second) // Update every 2 secon 
+	ticker := time.NewTicker(2 * time.Second) // Update every 2 seconds.
 	defer ticker.Stop()
 	for {
 		<-ticker.C
@@ -165,6 +197,15 @@ func main() {
 		c.JSON(http.StatusOK, sysInfo)
 	})
 
+	r.GET("/history", func(c *gin.Context) {
+		historicalMutex.RLock()
+		defer historicalMutex.RUnlock()
+		c.JSON(http.StatusOK, gin.H{
+			"cpu_usage": historicalCPUUsage,
+			"ram_usage": historicalRAMUsage,
+		})
+	})
+
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
@@ -190,4 +231,16 @@ func getSystemInfo() (map[string]interface{}, error) {
 		"kernelArch":      info.KernelArch,
 		"uptime":          info.Uptime,
 	}, nil
+}
+
+// calculateAverage computes the average of a slice of float64 numbers.
+func calculateAverage(data []float64) float64 {
+	if len(data) == 0 {
+		return 0
+	}
+	sum := 0.0
+	for _, value := range data {
+		sum += value
+	}
+	return sum / float64(len(data))
 }
