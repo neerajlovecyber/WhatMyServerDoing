@@ -80,7 +80,7 @@ const CpuTrend = () => {
         <Card className='row-span row-span-1 bg-emerald-900 bg-opacity-85 h-500' >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-white">CPU Usage Trend (Last Hour)</CardTitle>
-                <CpuIcon className='text-white'/>
+                
             </CardHeader>
             <CardContent  >
                 <Line options={options} data={data} />
