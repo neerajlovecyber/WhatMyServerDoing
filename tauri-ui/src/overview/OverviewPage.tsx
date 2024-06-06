@@ -10,14 +10,15 @@ import CpuTrend from '@/components/main/CpuTrend';
 const OverviewPage: React.FC= () => {
     return (
         <div>
- <div className="flex-4 space-y-2 p-8 pt-6">
+ <div className="flex-4 space-y-2 p-8 pt-3">
+ <Overview/>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <CpuUsageCard />
           <RamUsageCard />
           <DiskUsageCard />
           {/* <ActiveTimeCard /> */}
         </div>
-        <div className=" grid gap-4 md:grid-cols-2 lg:grid-cols-2 ">
+        <div className=" grid gap-4 md:grid-cols-2 lg:grid-cols-2">
         <CpuTrend />
         <CpuTrend />
           
@@ -25,7 +26,7 @@ const OverviewPage: React.FC= () => {
         
           {/* <RunningProcess /> */}
         </div>
-        <Overview/>
+        
       </div>
         </div>
     );

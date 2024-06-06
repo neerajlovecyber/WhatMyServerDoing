@@ -71,15 +71,14 @@ const CpuTrend = () => {
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
         fill: false,
+        tension: 0.5,
+        
       },
     ],
   };
 
   return (
-  <Card className='row-span' >
-    {/* <CardHeader>
-    <CardTitle className="text-sm font-medium">CPU Usage Trend</CardTitle>
-    </CardHeader> */}
+  <Card className='row-span row-span-1' >
     <CardContent>
   <Line options={options} data={data}  />
   </CardContent>
