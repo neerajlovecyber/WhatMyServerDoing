@@ -6,6 +6,7 @@ import DiskUsageCard from '@/components/main/DiskUsageCard';
 import ActiveTimeCard from '@/components/main/ActiveTimeCard';
 import  Overview from "@/dashboard/components/overview";
 import CpuTrend from '@/components/main/CpuTrend';
+import RamTrend from '@/components/main/RamTrend';
 
 const OverviewPage: React.FC= () => {
     return (
@@ -20,7 +21,7 @@ const OverviewPage: React.FC= () => {
         </div>
         <div className=" grid gap-4 md:grid-cols-2 lg:grid-cols-2">
         <CpuTrend />
-        <CpuTrend />
+        <RamTrend />
           
            
         
