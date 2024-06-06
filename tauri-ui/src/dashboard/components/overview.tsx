@@ -50,12 +50,12 @@ const { url } = useUrl();
   }, [url]);
 
   return (
-    <Card className="col-span-3">
-       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+    <Card>
+       <CardHeader className="flex flex-row items-center justify-between  pb-2">
         <CardTitle className=" text-lg  font-bold">Basic System Info</CardTitle>
       <DesktopIcon/>
       </CardHeader>
-      <CardContent>
+      <CardContent className='flex flex-row  space-x-3 '>
         <div className=""><b> Hostname</b> : {hostname}</div>
         <div className=""><b> OS</b> : {os}</div>
         <div className=""><b> Platform</b> : {platform}</div>
