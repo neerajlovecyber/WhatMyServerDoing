@@ -6,7 +6,7 @@ export function MainNav({
   ...props
 }: React.HTMLAttributes<HTMLElement> & { setActiveComponent: (component: string) => void }) {
   return (
-    <nav className={cn("flex items-center space-x-4 lg:space-x-6", className)} {...props}>
+    <nav className={cn("flex items-center space-x-4 lg:space-x-6 ", className)} {...props}>
       <button
         onClick={() => setActiveComponent("Overview")}
         className="text-sm font-medium transition-colors hover:text-primary"

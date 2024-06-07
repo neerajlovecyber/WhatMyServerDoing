@@ -81,7 +81,7 @@ const RamTrend = () => {
     };
 
     return (
-        <Card className='row-span row-span-1 bg-emerald-900 bg-opacity-85'>
+        <Card className='row-span row-span-1 bg-slate-600 bg-opacity-90' >
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className="text-sm font-medium text-white">RAM Usage Trend (Last Hour)</CardTitle>
                 

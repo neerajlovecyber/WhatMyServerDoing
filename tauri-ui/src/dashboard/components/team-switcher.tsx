@@ -185,25 +185,25 @@ useEffect(() => {
   };
   
   return (
-    <div>
+    <div className="">
 
 <Dialog open={showNewTeamDialog } onOpenChange={setShowNewTeamDialog}>
 
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover open={open} onOpenChange={setOpen} > 
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               role="combobox"
               aria-expanded={open}
               aria-label="Select a Server"
-              className={cn("w-[200px] justify-between", className)}
+              className={cn("w-[200px] justify-between bg-primary", className)}
             >
 
               {selectedTeam ? selectedTeam.label : "Select a team"}
               <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
+          <PopoverContent className="w-[200px] p-0" >
             <Command>
               <CommandList>
                 <CommandInput placeholder="Search Servers..." />
@@ -269,7 +269,7 @@ useEffect(() => {
             </DialogDescription>
           </DialogHeader>
           <div>
-            <DialogClose className="absolute top-12 right-2" />
+            <DialogClose className="absolute top-12 right-2 " />
             <div className="space-y-4 py-2 pb-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Server name</Label>
