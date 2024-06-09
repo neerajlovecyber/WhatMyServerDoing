@@ -18,7 +18,7 @@ const LogsPage: React.FC = () => {
     const logEndpoints: { [key: string]: string } = {
         'system': 'logs/syslog',
         'auth': 'logs/auth',
-        'kern': 'logs/kern',
+        'kern': 'logs/kernel',
         'mail': 'logs/mail',
     };
 
@@ -35,6 +35,8 @@ const LogsPage: React.FC = () => {
                             <SelectItem value="system">System Logs</SelectItem>
                             <SelectItem value="auth">Auth Log</SelectItem>
                             <SelectItem value="kern">Kern Log</SelectItem>
+                            <SelectItem value="mail">Mail Log</SelectItem>
+
                         </SelectContent>
                     </Select>
                 </div>

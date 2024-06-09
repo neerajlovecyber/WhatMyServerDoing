@@ -7,9 +7,14 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "tauri-ui"
+    "productName": "WhatsMyServerDoing"
   },
   "tauri": {
+    "systemTray": {
+      
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    },
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
@@ -68,13 +73,15 @@
     "windows": [
       {
         "fullscreen": false,
-        "title": "tauri-ui",
-        "center": true,
+        "title": "WhatsMyServerDoing",
+        "center": false,
+  
         "resizable": true,
         "decorations": false,
-        "transparent": true,
-        "height": 920,
-        "width": 1300
+        "transparent": false,
+        "height": 820,
+        "width": 1300,
+        "maximized":true
       }
     ]
   }
