@@ -111,7 +111,7 @@ jobs:
             github.rest.repos.updateRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              release_id: process.env.release_id,
+              release_id: ${{ env.release_id }}, // Access environment variable directly
               draft: false,
               prerelease: false
             })
