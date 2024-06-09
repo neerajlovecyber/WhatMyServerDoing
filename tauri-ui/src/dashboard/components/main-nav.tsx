@@ -25,7 +25,7 @@ export function MainNav({
         onClick={() => setActiveComponent("Logs")}
         className={cn("text-sm font-medium transition-colors hover:text-primary", {
           "text-primary": activeComponent === "Logs",
-          "text-red-500": activeComponent === "Logs", // Highlight in red for Logs
+          "text-red-500": activeComponent === "Logs", // Highlight in red for Logs.
         })}
       >
         Logs
