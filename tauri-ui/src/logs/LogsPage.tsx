@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search } from '@/components/search'; // Add this import statement
+import { Search } from '@/components/search';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import LogsTable from './LogsTable';
 
@@ -40,6 +40,7 @@ const LogsPage: React.FC = () => {
                 <div><Search onChange={handleSearchChange} /></div>
             </div>
             <div className='flex-1 overflow-y-auto'>
+                {/* Pass the logEndpoint prop to LogsTable */}
                 <LogsTable searchQuery={searchQuery} logEndpoint={logEndpoints[selectedLog]} />
             </div>
         </div>
