@@ -208,19 +208,19 @@ func main() {
 	})
 
 	r.GET("/logs/auth", func(c *gin.Context) {
-		sendLogFile(c, "auth.log")
+		sendLogFile(c, "/var/log/auth.log")
 	})
 
 	r.GET("/logs/syslog", func(c *gin.Context) {
-		sendLogFile(c, "syslog")
+		sendLogFile(c, "/var/log/syslog")
 	})
 
 	r.GET("/logs/kernel", func(c *gin.Context) {
-		sendLogFile(c, "kern.log")
+		sendLogFile(c, "/var/log/kern.log")
 	})
 
 	r.GET("/logs/mail", func(c *gin.Context) {
-		sendLogFile(c, "maillog")
+		sendLogFile(c, "/var/log/maillog")
 	})
 
 	if err := r.Run(":8080"); err != nil {

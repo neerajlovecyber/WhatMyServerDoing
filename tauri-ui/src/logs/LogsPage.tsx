@@ -19,6 +19,7 @@ const LogsPage: React.FC = () => {
         'system': 'logs/syslog',
         'auth': 'logs/auth',
         'kern': 'logs/kern',
+        'mail': 'logs/mail',
     };
 
     return (
