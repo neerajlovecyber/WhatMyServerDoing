@@ -54,7 +54,7 @@ const CpuTrend = () => {
         };
 
         fetchData();
-        const intervalId = setInterval(fetchData, 1000 * 10); // Fetch data every minute
+        const intervalId = setInterval(fetchData, 1000 * 30); // Fetch data every minute
         return () => clearInterval(intervalId);
     }, [url]);
 
@@ -83,7 +83,7 @@ const CpuTrend = () => {
                 
             </CardHeader>
             <CardContent  >
-                <Line options={options} data={data} />
+                <Line options={options} data={data} style={{maxHeight:"300px"}} />
             </CardContent>
         </Card>
     );

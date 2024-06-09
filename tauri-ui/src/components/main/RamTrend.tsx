@@ -57,7 +57,7 @@ const RamTrend = () => {
         };
 
         fetchData();
-        const intervalId = setInterval(fetchData, 1000 * 10); // Fetch data every minute
+        const intervalId = setInterval(fetchData, 1000 * 30); // Fetch data every minute
         return () => clearInterval(intervalId);
     }, [url]);
 
@@ -81,13 +81,13 @@ const RamTrend = () => {
     };
 
     return (
-        <Card className='row-span row-span-1 bg-slate-600 bg-opacity-90' >
+        <Card className='row-span row-span-1 bg-slate-600 bg-opacity-90'  >
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                 <CardTitle className="text-sm font-medium text-white">RAM Usage Trend (Last Hour)</CardTitle>
                 
             </CardHeader>
             <CardContent>
-                <Line options={options} data={data} className='' />
+                <Line options={options} data={data}  style={{maxHeight:"300px"}} />
             </CardContent>
         </Card>
     );

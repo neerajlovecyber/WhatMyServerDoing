@@ -11,9 +11,9 @@ import RamTrend from '@/components/main/RamTrend';
 const OverviewPage: React.FC= () => {
     return (
         <div>
- <div className="flex-4 space-y-2 p-8 pt-3">
+ <div className="flex-2 space-y-2 p-6 pt-2">
  <Overview/>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
           <CpuUsageCard />
           <RamUsageCard />
           <DiskUsageCard />
