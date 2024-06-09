@@ -3,8 +3,6 @@ name: Go
 on:
   push:
     branches: [ "main" ]
-    # paths:
-    #   - 'go/**'
   pull_request:
     branches: [ "main" ]
     paths:
@@ -12,14 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-
-    outputs:
-      os: ${{ matrix.os }}
-
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -37,17 +28,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: whatsmyderverdoing-connector-${{ matrix.os }}
+          name: whatsmyderverdoing-connector-linux
           path: go/build
 
   release:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -57,7 +44,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: whatsmyderverdoing-connector-${{ needs.build.outputs.os }}
+          name: whatsmyderverdoing-connector-linux
           path: build
 
       - name: Create GitHub Release
@@ -72,7 +59,6 @@ jobs:
           prerelease: false
 
       - name: Upload Release Asset (Linux)
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -80,15 +66,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: build/whatsmyderverdoing-connector
           asset_name: whatsmyderverdoing-connector-linux
-          asset_content_type: application/octet-stream
-
-      - name: Upload Release Asset (Windows)
-        if: matrix.os == 'windows-latest'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/whatsmyderverdoing-connector.exe
-          asset_name: whatsmyderverdoing-connector-windows.exe
           asset_content_type: application/octet-stream
