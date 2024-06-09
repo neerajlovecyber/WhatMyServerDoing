@@ -3,7 +3,6 @@ import React from 'react';
 import CpuUsageCard from '@/components/main/CpuUsageCard';
 import RamUsageCard from '@/components/main/RamUsageCard';
 import DiskUsageCard from '@/components/main/DiskUsageCard';
-import ActiveTimeCard from '@/components/main/ActiveTimeCard';
 import  Overview from "@/dashboard/components/overview";
 import CpuTrend from '@/components/main/CpuTrend';
 import RamTrend from '@/components/main/RamTrend';

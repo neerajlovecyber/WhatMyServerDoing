@@ -24,13 +24,18 @@ export default function DashboardPage() {
         return <Overview />;
     }
   };
+  
 
   return (
     <div className="flex-col md:flex">
       <div className="border-b">
         <div className="flex h-16 items-center px-4">
           <TeamSwitcher />
-          <MainNav className="mx-6" setActiveComponent={setActiveComponent} />
+          <MainNav
+  className="mx-6"
+  activeComponent={activeComponent} // Pass activeComponent prop here
+  setActiveComponent={setActiveComponent}
+/>
           <div className="ml-auto flex items-center space-x-4">
             <UserNav />
           </div>

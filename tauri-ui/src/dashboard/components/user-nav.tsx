@@ -28,7 +28,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useUrl } from '@/components/main/UrlContext';
 import { UserContext } from '@/providers/UserProvider';
-
+import { SunIcon,MoonIcon } from 'lucide-react';
+import { s } from '@tauri-apps/api/path-f8d71c21';
 export function UserNav() {
   const { setTheme, theme } = useTheme();
   const isDark = theme === 'dark';
@@ -92,41 +93,9 @@ export function UserNav() {
     <div className="inline-flex items-center">
       <button className="mr-3 h-8 w-8" onClick={toggleTheme}>
         {isDark ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-sun"
-          >
-            <circle cx="12" cy="12" r="5" />
-            <path d="M12 1v2" />
-            <path d="M12 21v2" />
-            <path d="M4.22 4.22l1.42 1.42" />
-            <path d="M18.36 18.36l1.42 1.42" />
-            <path d="M1 12h2" />
-            <path d="M21 12h2" />
-            <path d="M4.22 19.78l1.42-1.42" />
-            <path d="M18.36 5.64l1.42-1.42" />
-          </svg>
+          <SunIcon className='min-h-full'/>
         ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-moon-star"
-          >
-            <path d="M12 3a6 6 0 0 0 9 9 9 0 1 1-9-9" />
-            <path d="M20 3v4" />
-            <path d="M22 5h-4" />
-          </svg>
+          <MoonIcon/>
         )}
       </button>
       <TooltipProvider>
