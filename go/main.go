@@ -4,6 +4,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
@@ -206,6 +207,22 @@ func main() {
 		})
 	})
 
+	r.GET("/logs/auth", func(c *gin.Context) {
+		sendLogFile(c, "auth.log")
+	})
+
+	r.GET("/logs/syslog", func(c *gin.Context) {
+		sendLogFile(c, "syslog")
+	})
+
+	r.GET("/logs/kernel", func(c *gin.Context) {
+		sendLogFile(c, "kern.log")
+	})
+
+	r.GET("/logs/mail", func(c *gin.Context) {
+		sendLogFile(c, "maillog")
+	})
+
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
@@ -243,4 +260,16 @@ func calculateAverage(data []float64) float64 {
 		sum += value
 	}
 	return sum / float64(len(data))
+}
+
+// sendLogFile reads the log file and sends its content as a plain text response.
+func sendLogFile(c *gin.Context, filePath string) {
+	logData, err := os.ReadFile(filePath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read log file"})
+		return
+	}
+
+	c.Header("Content-Type", "text/plain")
+	c.String(http.StatusOK, string(logData))
 }
