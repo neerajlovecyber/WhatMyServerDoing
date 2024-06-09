@@ -47,23 +47,10 @@ jobs:
           name: whatsmyderverdoing-connector-linux
           path: build
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update GitHub Release
+        uses: softprops/action-gh-release@v1
         with:
+          files: |
+            build/whatsmyderverdoing-connector
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: latest
-          release_name: Release
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset (Linux)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/whatsmyderverdoing-connector
-          asset_name: whatsmyderverdoing-connector-linux
-          asset_content_type: application/octet-stream
