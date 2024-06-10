@@ -30,7 +30,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.yourname.dev",
+      "identifier": "com.WhatsMyServerDoing.dev",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -57,6 +57,7 @@
         {
           "scheme": "https",
           "domain": "tauri.localhost",
+         
           "windows": [
             "main"
           ],

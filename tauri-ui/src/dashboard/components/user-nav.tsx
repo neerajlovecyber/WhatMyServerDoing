@@ -61,6 +61,7 @@ export function UserNav() {
       try {
         const response = await fetch(serverUrl);
         if (response.ok) {
+          
           setIsServerOnline(true);
         } else {
           setIsServerOnline(false);

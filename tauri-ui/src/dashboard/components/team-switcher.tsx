@@ -1,44 +1,44 @@
-import { useState, useContext, useEffect } from "react"
-import * as React from "react"
-import { CaretSortIcon, CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons"
-import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { useState, useContext, useEffect } from "react";
+import * as React from "react";
+import { CaretSortIcon, CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { database } from "../../services/firebase";
-import { ref, push, onValue } from "firebase/database"; 
+import { ref, push, onValue } from "firebase/database";
 import { UserContext } from '@/providers/UserProvider';
 import { useUrl } from '@/components/main/UrlContext';
-import { DialogClose } from "@radix-ui/react-dialog"
+import { DialogClose } from "@radix-ui/react-dialog";
 
 const initialGroups = [
   {
     label: "Servers",
     teams: []
   }
-]
+];
 
-type Team = (typeof initialGroups)[number]["teams"][number]
+type Team = (typeof initialGroups)[number]["teams"][number];
 
-type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
+type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
 interface TeamSwitcherProps extends PopoverTriggerProps {}
 
 export default function TeamSwitcher({ className }: TeamSwitcherProps) {
-  const [open, setOpen] = useState(false)
-  const [showNewTeamDialog, setShowNewTeamDialog] = useState(false)
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
+  const [open, setOpen] = useState(false);
+  const [showNewTeamDialog, setShowNewTeamDialog] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [servername, setServername] = useState("");
   const [newserverUrl, setnewServerUrl] = useState("");
   const [groups, setGroups] = useState(initialGroups);
   const { user } = useContext(UserContext);
   
   const { url, setUrl } = useUrl();
-  const [recordAdded, setRecordAdded] = useState(false)
+  const [recordAdded, setRecordAdded] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -73,6 +73,7 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
       unsubscribe();
     };
   }, [user, selectedTeam]);
+
   const handleCancelClick = () => {
     // Close the dialog only if a record has been added
     if (recordAdded) {
@@ -80,55 +81,23 @@ export default function TeamSwitcher({ className }: TeamSwitcherProps) {
     }
   };
 
-useEffect(() => {
-  console.log("Selected team:", selectedTeam);
-  // Check if a team is selected
-  if (selectedTeam) {
-    // Set the URL context with the URL of the selected team
-    console.log("Setting URL in context:", selectedTeam.url);
-    setUrl(selectedTeam.url);
-  }
-}, [selectedTeam, setUrl]);
-
-useEffect(() => {
-  if (!user) return;
-
-  const urlll = `servers/${user.uid}`;
-  const dbRef = ref(database, urlll);
-
-  // Fetch the data from the database when the component mounts
-  const unsubscribe = onValue(dbRef, (snapshot) => {
-    const data: { [key: string]: { name: string; url: string } } = snapshot.val();
-    if (data) {
-      // Convert the data object into an array of teams with label, value, and url properties
-      const teams = Object.entries(data).map(([key, value]: [string, { name: string; url: string }]) => ({
-        label: value.name,
-        value: key,
-        url: value.url // Include the url property here
-      }));
-      // Update the groups with the fetched teams
-      setGroups([{ label: "Servers", teams }]);
-      // Select the first team by default if none selected
-      if (!selectedTeam) {
-        setSelectedTeam(teams[0]);
-      }
+  useEffect(() => {
+    console.log("Selected Server:", selectedTeam);
+    // Check if a team is selected
+    if (selectedTeam) {
+      // Set the URL context with the URL of the selected team
+      console.log("Setting URL in context:", selectedTeam.url);
+      setUrl(selectedTeam.url);
     }
-  });
+  }, [selectedTeam, setUrl]);
 
-  // Cleanup function to unsubscribe from database changes
-  return () => {
-    unsubscribe();
-  };
-}, [user]);
-
-
-  const addServerToDatabase = async () => {
+  const addServerToDatabase = async (url) => {
     try {
       const urlll = `servers/${user.uid}`;
       const dbRef = ref(database, urlll);
       await push(dbRef, {
         name: servername,
-        url: newserverUrl
+        url
       });
   
       setnewServerUrl("");
@@ -144,6 +113,10 @@ useEffect(() => {
   const isValidUrl = (url) => {
     const pattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
     return pattern.test(url);
+  };
+
+  const ensureTrailingSlash = (url) => {
+    return url.endsWith("/") ? url : url + "/";
   };
   
   const handleSubmit = async (e) => {
@@ -165,18 +138,21 @@ useEffect(() => {
       alert("Invalid server URL format. Please enter a valid URL.");
       return;
     }
+
+    // Ensure the URL has a trailing slash
+    const serverUrlWithSlash = ensureTrailingSlash(newserverUrl);
   
     try {
-      // Ping the server URL to check if it's up
-      const response = await fetch(newserverUrl);
-      console.log(response);
-      // Check if the response status is in the success range
-      if (response.ok) {
-        // Server is up, proceed with adding it to the database
-        await addServerToDatabase();
+      // Ping the server URL to check if it responds with the expected JSON
+      const response = await fetch(serverUrlWithSlash);
+      const responseData = await response.json();
+  
+      if (response.ok && responseData.Server === "Server is running") {
+        // Server is up and responds correctly, proceed with adding it to the database
+        await addServerToDatabase(serverUrlWithSlash);
       } else {
-        // Server is down or unreachable
-        alert("Failed to ping the server. Please check the URL and try again.");
+        // Server is down or does not respond with the expected JSON
+        alert("Failed to validate the server. Please check the URL and try again.");
       }
     } catch (error) {
       console.error("Error adding server:", error);
@@ -187,7 +163,7 @@ useEffect(() => {
   return (
     <div className="">
 
-<Dialog open={showNewTeamDialog } onOpenChange={setShowNewTeamDialog}>
+      <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
 
         <Popover open={open} onOpenChange={setOpen} > 
           <PopoverTrigger asChild>
@@ -199,7 +175,7 @@ useEffect(() => {
               className={cn("w-[200px] justify-between bg-primary", className)}
             >
 
-              {selectedTeam ? selectedTeam.label : "Select a team"}
+              {selectedTeam ? selectedTeam.label : "Select a server"}
               <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -284,7 +260,7 @@ useEffect(() => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => handleCancelClick}>
+            <Button variant="outline" onClick={handleCancelClick}>
               Cancel
             </Button>
             <Button type="submit" onClick={handleSubmit}>Add</Button>
