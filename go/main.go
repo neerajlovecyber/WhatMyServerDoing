@@ -223,7 +223,8 @@ func main() {
 		sendLogFile(c, "/var/log/maillog")
 	})
 
-	if err := r.Run(":8080"); err != nil {
+	// Start the HTTPS server
+	if err := r.RunTLS(":8080", "server.crt", "server.key"); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useUrl } from '@/components/main/UrlContext';
 import { DesktopIcon } from '@radix-ui/react-icons';
-
+import { fetch } from '@tauri-apps/plugin-http';
 
 const RamUsageCard = () => {
   const [hostname, sethostname] = useState<string>("0");
@@ -17,8 +17,10 @@ const { url } = useUrl();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url + 'system');
-        
+        // const response = await fetch(url + 'system');
+        const response = await fetch(url + 'system', {
+          method: 'GET',
+        });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -33,7 +35,7 @@ const { url } = useUrl();
         setuptimehours(Math.round(data.uptime/60/60*10)/10);
         
       } catch (error) {
-        console.error('Error fetching RAM data:', error);
+        console.error('Error fetching Overview data:', error);
         sethostname("-");
         setos("-");
         setplatform("-");
