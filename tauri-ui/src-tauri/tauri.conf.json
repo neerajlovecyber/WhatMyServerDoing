@@ -55,7 +55,7 @@
       "csp": null,
       "dangerousRemoteDomainIpcAccess": [
         {
-          "scheme": "http",
+          "scheme": "https",
           "domain": "tauri.localhost",
          
           "windows": [
